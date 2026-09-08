@@ -1,0 +1,58 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default-deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Test connection probe endpoint
+    match /test/{testId} {
+      allow read: if true;
+    }
+
+    // Indian crop production data
+    match /crop_production_data/{cropId} {
+      allow read: if true;
+      allow write: if request.resource.data.state_name is string
+                   && request.resource.data.state_name.size() <= 100
+                   && request.resource.data.season is string
+                   && request.resource.data.season.size() <= 50
+                   && request.resource.data.crop is string
+                   && request.resource.data.crop.size() <= 100
+                   && request.resource.data.rank is number;
+    }
+
+    // Usage and diagnosis query logs
+    match /query_logs/{logId} {
+      allow read: if true;
+      allow create: if request.resource.data.timestamp is string
+                    && request.resource.data.timestamp.size() <= 100
+                    && request.resource.data.feature is string
+                    && request.resource.data.feature.size() <= 100
+                    && request.resource.data.inputSummary is string
+                    && request.resource.data.inputSummary.size() <= 2000
+                    && request.resource.data.resultSummary is string
+                    && request.resource.data.resultSummary.size() <= 10000;
+      allow update, delete: if false;
+    }
+
+    // Training data for ML model
+    match /training_data/{docId} {
+      allow read: if true;
+      allow create: if request.resource.data.image_base64 is string
+                    && request.resource.data.image_base64.size() <= 500000
+                    && request.resource.data.gemini_diagnosis is string
+                    && request.resource.data.gemini_diagnosis.size() <= 500
+                    && request.resource.data.timestamp is string
+                    && request.resource.data.timestamp.size() <= 100
+                    && request.resource.data.verified is bool;
+      allow update: if request.resource.data.verified is bool;
+      allow delete: if false;
+    }
+  }
+}

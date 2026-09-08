@@ -1,0 +1,129 @@
+{
+  "entities": {
+    "CropProduction": {
+      "title": "Crop Production Data",
+      "description": "Indian crop production data by state, season, and yield ranking",
+      "type": "object",
+      "properties": {
+        "state_name": {
+          "type": "string",
+          "description": "Name of the Indian state"
+        },
+        "season": {
+          "type": "string",
+          "description": "Agricultural season (Kharif, Rabi, Whole Year, Summer, Autumn, Winter)"
+        },
+        "crop": {
+          "type": "string",
+          "description": "Name of the crop"
+        },
+        "production": {
+          "type": "number",
+          "description": "Production volume in tonnes or quintals"
+        },
+        "rank": {
+          "type": "number",
+          "description": "Rank 1 = highest production for that state/season combination"
+        }
+      },
+      "required": [
+        "state_name",
+        "season",
+        "crop",
+        "rank"
+      ]
+    },
+    "QueryLog": {
+      "title": "Query Log",
+      "description": "Logged analytics for advisory and diagnosis operations",
+      "type": "object",
+      "properties": {
+        "timestamp": {
+          "type": "string",
+          "description": "ISO timestamp string"
+        },
+        "feature": {
+          "type": "string",
+          "description": "Feature used: Photo Diagnosis, Preventive Checklist, or Regional Advisory"
+        },
+        "inputSummary": {
+          "type": "string",
+          "description": "Summary of inputs provided by the user"
+        },
+        "resultSummary": {
+          "type": "string",
+          "description": "Summary of the diagnosis or advisory result"
+        },
+        "diseaseName": {
+          "type": "string",
+          "description": "Name of diagnosed disease if any"
+        },
+        "state": {
+          "type": "string",
+          "description": "State selected for regional advisory"
+        },
+        "crop": {
+          "type": "string",
+          "description": "Crop examined or requested"
+        }
+      },
+      "required": [
+        "timestamp",
+        "feature",
+        "inputSummary",
+        "resultSummary"
+      ]
+    },
+    "TrainingData": {
+      "title": "Training Data",
+      "description": "Leaf image records and confirmed annotations collected for ML model training",
+      "type": "object",
+      "properties": {
+        "image_base64": {
+          "type": "string",
+          "description": "Client-compressed base64 encoded JPEG leaf image"
+        },
+        "gemini_diagnosis": {
+          "type": "string",
+          "description": "Health status and pathogen detected by Gemini"
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "ISO timestamp string"
+        },
+        "verified": {
+          "type": "boolean",
+          "description": "Whether diagnosis has been verified or corrected"
+        },
+        "confirmed_label": {
+          "type": "string",
+          "description": "Label confirmed by user (same as gemini_diagnosis or user correction)"
+        },
+        "details": {
+          "type": "string",
+          "description": "Optional notes or details provided with correction"
+        }
+      },
+      "required": [
+        "image_base64",
+        "gemini_diagnosis",
+        "timestamp",
+        "verified"
+      ]
+    }
+  },
+  "firestore": {
+    "/crop_production_data/{cropId}": {
+      "schema": "CropProduction",
+      "description": "Indian crop production statistics dataset"
+    },
+    "/query_logs/{logId}": {
+      "schema": "QueryLog",
+      "description": "Logged queries across all features"
+    },
+    "/training_data/{docId}": {
+      "schema": "TrainingData",
+      "description": "ML training dataset collection with image paths and labels"
+    }
+  }
+}

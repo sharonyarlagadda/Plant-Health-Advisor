@@ -1,0 +1,6 @@
+{
+  "name": "Plant Health Advisor",
+  "description": "AI-powered plant leaf disease diagnosis, preventive care checklists, regional Indian crop advisory, and usage analytics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
